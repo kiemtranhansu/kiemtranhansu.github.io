@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        
+         .canhtrai{
+         margin-left: 100px;
+         }
+        
+        tr td:first-child{
+        text-align:Center;
+        
+        }
+        tr td:first-child(2){
+        text-align:Left;
+        }
+        
+        table td:nth-child(3) {
+        text-align:Center;
+        }
+        table td:nth-child(4) {
+        text-align:Left;
+        }
+        table td:nth-child(5) {
+        text-align:Left;
+        }
+        table td:nth-child(6) {
+        text-align:Left;
+        }        
+         table td:nth-child(7) {
+        text-align:Left;
+        }
+         table td:nth-child(11) {
+        text-align:Center;
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        h2 { 
+          font-style:Italic;
+          color: red;
+        }
+          table, th, td {
+          border-style: Solid ;
+          border-width: 0.1;
+         }
+        </style>
+         
+        <base target="_top">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+        
+        <!--##JAVASCRIPT FUNCTIONS ---------------------------------------------------- -->
+        <script>
+        
+
+        
+        
+          //PREVENT FORMS FROM SUBMITTING / PREVENT DEFAULT BEHAVIOUR
+          function preventFormSubmit() {
+            var forms = document.querySelectorAll('form');
+            for (var i = 0; i < forms.length; i++) {
+              forms[i].addEventListener('submit', function(event) {
+              event.preventDefault();
+              });
+            }
+          }
+          window.addEventListener("load", preventFormSubmit, true); 
+             
+          
+          //HANDLE FORM SUBMISSION
+          function handleFormSubmit(formObject) {
+            google.script.run.withSuccessHandler(createTable).processForm(formObject);
+            document.getElementById("search-form").reset();
+          }
+        
+          //CREATE THE DATA TABLE
+          function createTable(dataArray) {
+            if(dataArray && dataArray !== undefined && dataArray.length != 0){
+              var result = "<table class='table table-bordered' id='dtable' style='font-size:0.9em'>"+
+                           "<thead style='white-space: nowrap'>"+
+                             "<tr>"+                               //Change table headings to match witht he Google Sheet
+                              "<th scope='col' style='text-align:center'>ID #</th>"+
+                              "<th scope='col' style='text-align:center'>HỌ VÀ TÊN  </th>"+
+                              "<th scope='col' style='text-align:center'>GIỚI TÍNH</th>"+
+                              "<th scope='col' style='text-align:center'>NĂM SINH</th>"+
+                              "<th scope='col' style='text-align:center'>CMND</th>"+
+                              "<th scope='col' style='text-align:center'>SDT</th>"+
+                              "<th scope='col' style='text-align:center'>ĐỊA CHỈ</th>"+
+                              "<th scope='col' style='text-align:center'>THÔNG TIN 1</th>"+
+                            "</tr>"+
+                          "</thead>";
+                        
+              for(var i=0; i<dataArray.length; i++) {
+                  result += "<tr>";
+                  for(var j=0; j<dataArray[i].length -8; j++){
+                      result += "<td>"+dataArray[i][j]+"</td>";
+                  }
+                  result += "</tr>";
+              }
+              result += "</table>";
+              var div = document.getElementById('search-results');
+              div.innerHTML = result;
+            }else{
+              var div = document.getElementById('search-results');
+              //div.empty()
+              div.innerHTML = "<h2>Không tìm thấy dữ liệu!</h2>";
+            }
+          }
+        </script>
+        <!--##JAVASCRIPT FUNCTIONS ~ END ---------------------------------------------------- -->
+        
+    </head>
+    <body>
+        <div>
+            <br>
+            <div class="row">
+              <div class="col">
+            
+                  <!-- ## SEARCH FORM ------------------------------------------------ -->
+                  <form id="search-form" class="form-inline" onsubmit="handleFormSubmit(this)">
+                    <div class="form-group mb-2">
+                      <label for="searchtext"><b><i>Search for Information</i></b></label>
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                      <input type="text" class="form-control" id="searchtext" name="searchtext" placeholder="Tên,sdt,cmnd,năm sinh...">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Search</button>
+                  </form>
+                  
+                 <p>Để xem toàn bộ danh sách nhập "<b>All</b>" vào textbox.</p>
+                 <p>Nhập <b>Tên</b>, <b>CMND</b> , <b>Năm Sinh</b> hoặc <b>SĐT</b> để kiểm tra thông tin nhân sự. </p>
+                  <!-- ## SEARCH FORM ~ END ------------------------------------------- -->
+              
+              </div>    
+            </div>
+            
+            <div class="row">
+              <div class="col">
+            
+                <!-- ## TABLE OF SEARCH RESULTS ------------------------------------------------ -->
+                <div id="search-results" class="table-responsive">
+                  <!-- The Data Table is inserted here by JavaScript -->
+                </div>
+                <!-- ## TABLE OF SEARCH RESULTS ~ END ------------------------------------------------ -->
+                  
+              </div>
+            </div>
+            </div>
+    </body>
+</html>
+
+<!-- <img class="materialboxed" width="150" src="https://drive.google.com/uc?export=view&id=1eCskcYsOF6k2dqQXlF-vJvKX4jMF2cLu"> -->
